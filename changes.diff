@@ -1,0 +1,724 @@
+diff --git a/gui_lib/AtlasTests_All.py b/gui_lib/AtlasTests_All.py
+index b7e3b91..7acdd04 100644
+--- a/gui_lib/AtlasTests_All.py
++++ b/gui_lib/AtlasTests_All.py
+@@ -58,7 +58,7 @@ class BasicTest(tng.api.TestCase):
+         """
+         guiHelperLib.banner("Inserting Users")
+         guiHelperLib.insert_users(self.atlas_control, self.user_onboard_1['userList'], self.user_onboard_1['entitlements'])
+-         
++        
+     @screenshot_on_error  
+     def test_02_edit_user(self):
+         """
+@@ -72,7 +72,7 @@ class BasicTest(tng.api.TestCase):
+                                                   self.user_line_config1['userName'],
+                                                   config.cisAccess,
+                                                   self.user_verify_1['userfields'], 'Userfields'))
+-         
++        
+     @screenshot_on_error  
+     def test_03_verify_user_1(self):
+         """
+@@ -80,13 +80,13 @@ class BasicTest(tng.api.TestCase):
+         """
+         guiHelperLib.banner("Verifying Users")
+         guiHelperLib.verify_user(self.atlas_control, self.user_1['userName'])
+-                
++             
+ #    def test_04_negativeAddUser(self):
+ #         guiHelperLib.negative_insert(self.atlas_control, config.user1Options)
+-      
++     
+ #    def test_05_finalizeRegistration(self):
+ #         guiHelperLib.finalizeRegistration(self.gmail_control, self.userId, self.password)
+-      
++     
+     def test_06_fetch_activationcode_email(self):
+         """
+         This test fetches the activation code from the gmail ui
+@@ -95,7 +95,7 @@ class BasicTest(tng.api.TestCase):
+         userName = self.userName
+         userName = userName.split("+")[0] + "@" + userName.split("@")[1]
+         guiHelperLib.fetchActivationCode(self.gmail_control, userName, self.password)
+-               
++              
+     @screenshot_on_error
+     def test_07_fetch_activationcode_atlasui(self):
+         """
+@@ -103,7 +103,7 @@ class BasicTest(tng.api.TestCase):
+         """
+         guiHelperLib.banner("Fetching activation code from Atlas UI")
+         guiHelperLib.get_activationcode_from_atlas_ui(self.atlas_control, self.userName)
+-           
++          
+     @screenshot_on_error   
+     def test_08_fetch_activationcode_atlas(self):
+         """
+@@ -114,7 +114,7 @@ class BasicTest(tng.api.TestCase):
+         userName = self.userName
+         userName = userName.split("+")[0] + "@" + userName.split("@")[1]
+         guiHelperLib.retrieve_activationcode_from_atlasui_and_compare_with_email(self.atlas_control, self.gmail_control, userName, self.password, userId)
+-          
++         
+     @screenshot_on_error        
+     def test_09_callFwdAll(self):
+         """
+@@ -122,77 +122,53 @@ class BasicTest(tng.api.TestCase):
+         This Also verifies CallForwardAll using CMI
+         """
+         guiHelperLib.banner("Adding Call Forward All")
+-        """
+-        Returning directory number because of JSON Verification
+-        """
+-        directory_number = guiHelperLib.update_callfwd_dn(
++        guiHelperLib.update_callfwd_dn(
+                                        self.atlas_control, 
+                                        self.user_line_config1['userName'], 
+                                        'cfa', 
+                                        self.user_line_config1['call_forward_all']
+                                        )
+-        assert(guiHelperLib.verify_data_using_cmi(
+-            self.um1, config.customer1, self.user_line_config1['userName'],
+-            config.cisAccess, self.user_verify_1['cfa'],  
+-            identifier="pattern", value=directory_number
+-            ))
+-                  
++         
+     @screenshot_on_error            
+-    def test_10_callfwdbusy(self):
++    def test_10_callfwdbusy_and_callfwdnoanswer(self):
+         """
+         This test sets CFNA and CFB on user Line on  Atlas UI
+         This Also verifies CFNA and CFB using CMI
+         """
+         guiHelperLib.banner("Adding Call Forward Busy and Call Forward no Answer")
+-        """
+-        Returning directory number because of JSON Verification
+-        """
+-        directory_number = guiHelperLib.update_callfwd_dn(
++        guiHelperLib.update_callfwd_dn(
+                                        self.atlas_control, 
+                                        self.user_line_config1['userName'], 
+-                                       'cfb',
++                                       'cfbInt_And_cfnaInt', 
++                                       self.user_line_config1['call_forward_no_answer'], 
+                                        self.user_line_config1['call_forward_busy']
+-                                       )   
++                                       )
++     
+         assert(guiHelperLib.verify_data_using_cmi(
+             self.um1, config.customer1, self.user_line_config1['userName'],
+-            config.cisAccess, self.user_verify_1['cfb'], 
+-            identifier="pattern", value=directory_number
+-            ))
+-            
+-     
+-    @screenshot_on_error    
+-    def test_11_dont_fwd_calls(self):
+-        """
+-        This test sets DFC on user Line on  Atlas UI
+-        """
+-        guiHelperLib.banner("Adding Do Not Forward Calls")
+-        guiHelperLib.update_callfwd_dn(self.atlas_control, 
+-                                  self.user_line_config1['userName'], 
+-                                'dfc') 
+- 
++            config.cisAccess, self.user_verify_1['cfbCfna']))
++         
+     @screenshot_on_error
+-    def test_11_callfwdbusyext(self):
++    def test_11_callfwdbusyext_and_callfwdnoanswerext(self):
+         """
+         This test sets CFNA and CFB External on user Line on  Atlas UI
+         This Also verifies CFNA and CFB Ext using CMI
+         """
+         guiHelperLib.banner("Adding Call Forward Busy External and Call Forward No Answer External")
+-        """
+-        Returning directory number because of JSON Verification
+-        """
+-        directory_number = guiHelperLib.update_callfwd_dn(
++        guiHelperLib.update_callfwd_dn(
+                                       self.atlas_control, 
+                                       self.user_line_config1['userName'], 
+-                                      'cfbExt', 
++                                      'cfbExt_And_cfnaExt', 
++                                      self.user_line_config1['call_forward_no_answer_ext'], 
+                                       self.user_line_config1['call_forward_busy_ext']
+-                                      )   
++                                      )
++     
+         assert(guiHelperLib.verify_data_using_cmi(
+                                                  self.um1, 
+                                                  config.customer1, 
+                                                  self.user_line_config1['userName'],
+                                                  config.cisAccess,  
+-                                                 self.user_verify_1['cfbExt'],
+-                                                 identifier="pattern", value=directory_number
++                                                 self.user_verify_1['cfbCfnaExt']
+                                                  ))
+          
+     @screenshot_on_error  
+@@ -200,17 +176,18 @@ class BasicTest(tng.api.TestCase):
+         """
+         This test sets SNR on user Line on  Atlas UI
+         """
+-         
+         guiHelperLib.banner("Adding the Single Number Reach")
+-        guiHelperLib.add_snr(self.atlas_control, self.user_line_config1['userName'], self.user_line_config1['snr'])        
++        guiHelperLib.add_snr(self.atlas_control, self.user_line_config1['userName'], self.user_line_config1['snr'])
++    
+         assert(guiHelperLib.verify_data_using_cmi(
+--                                                 self.um1, 
+--                                                 config.customer1, 
+--                                                 self.user_line_config1['userName'],
+--                                                 config.cisAccess, 
+--                                                 self.user_verify_1['snr'], 
+--                                                 'SNR'))
+-     
++                                                 self.um1, 
++                                                 config.customer1, 
++                                                 self.user_line_config1['userName'],
++                                                 config.cisAccess, 
++                                                 self.user_verify_1['snr'], 
++                                                 'SNR'
++                                                 ))
++       
+     @screenshot_on_error   
+     def test_13_externaldn_existing_user(self):
+         """
+@@ -219,19 +196,13 @@ class BasicTest(tng.api.TestCase):
+         guiHelperLib.banner("Adding the External DN on User Line")
+         dn = guiHelperLib.add_external_dn(self.atlas_control, self.user_line_config1['userName'])
+         externalnumdict = {'numMask': dn}
+-        """
+-        Returning directory number because of JSON Verification
+-        """
+-        internal_dn = guiHelperLib.return_line_number(self.atlas_control, self.user_line_config1['userName'])
+         assert(guiHelperLib.verify_data_using_cmi(
+                                                 self.um1,
+                                                 config.customer1,
+                                                 self.user_line_config1['userName'],
+                                                 config.cisAccess,
+                                                 externalnumdict,
+-                                                'AltNumbers',
+-                                                identifier="pattern", value=internal_dn
+-                                                ))
++                                                'AltNumbers'))
+          
+     @screenshot_on_error
+     def test_14_change_callerid_displayname(self):
+@@ -239,24 +210,19 @@ class BasicTest(tng.api.TestCase):
+         This test Change CallerID Display Name  on user Line on  Atlas UI
+         """
+         guiHelperLib.banner("Changing the Caller ID Display Name")
+-        """
+-         Returning directory number because of JSON Verification
+-         """
+-        directory_number = guiHelperLib.change_callerid_displayname(
+-                                                 self.atlas_control, 
+-                                                 self.user_line_config1['userName'], 
+-                                                 self.user_line_config1['caller_id_display_name']
+-                                                 )
+-                 
++        guiHelperLib.change_callerid_displayname(
++                                                self.atlas_control, 
++                                                self.user_line_config1['userName'], 
++                                                self.user_line_config1['caller_id_display_name']
++                                                )
++       
+         assert(guiHelperLib.verify_data_using_cmi(
+-                                                   self.um1,
+-                                                   config.customer1,
+-                                                   self.user_line_config1['userName'],
+-                                                   config.cisAccess,
+-                                                   self.user_verify_1['callerIdDisplayName'],
+-                                                   identifier="pattern", value=directory_number
+-                                                   ))
+- 
++                                                  self.um1,
++                                                  config.customer1,
++                                                  self.user_line_config1['userName'],
++                                                  config.cisAccess,
++                                                  self.user_verify_1['callerIdDisplayName']))
++         
+     @screenshot_on_error
+     def test_15_change_extension_number(self):
+         """
+@@ -266,14 +232,12 @@ class BasicTest(tng.api.TestCase):
+         dn = guiHelperLib.change_extension_number(self.atlas_control, self.user_line_config1['userName'])
+         extensionnumdict = {'pattern': dn}
+         assert(guiHelperLib.verify_data_using_cmi(
+-                                                self.um1,
+-                                                config.customer1,
+-                                                self.user_line_config1['userName'],
+-                                                config.cisAccess,
+-                                                extensionnumdict, 
+-                                                identifier="pattern", value=dn
+-                                                ))
+-            
++                                                  self.um1,
++                                                  config.customer1,
++                                                  self.user_line_config1['userName'],
++                                                  config.cisAccess,
++                                                  extensionnumdict))
++           
+     @screenshot_on_error   
+     def test_16_multiple_user_insert(self):
+         """
+@@ -282,7 +246,7 @@ class BasicTest(tng.api.TestCase):
+         guiHelperLib.banner("Inserting multiple users")
+         guiHelperLib.insert_users(self.atlas_control, self.user_onboard_2['userList'], self.user_onboard_2['entitlements'])
+         guiHelperLib.verify_users_gmail(self.gmail_control, self.user_onboard_2['userList'])
+-          
++         
+     @screenshot_on_error
+     def test_17_manualCase1(self):
+         """
+@@ -291,7 +255,7 @@ class BasicTest(tng.api.TestCase):
+         guiHelperLib.banner("Inserting user by selecting the entitlement as 'squad UC'")
+         guiHelperLib.insert_users(self.atlas_control, self.user_onboard_3['userList'], self.user_onboard_3['entitlements'])
+         guiHelperLib.verify_users_gmail(self.gmail_control, self.user_onboard_3['userList'])
+-     
++    
+     @screenshot_on_error   
+     def test_18_internaldn_existing_user(self):
+         """
+@@ -299,14 +263,6 @@ class BasicTest(tng.api.TestCase):
+         """
+         guiHelperLib.banner("Adding the Internal DN on User Line")
+         guiHelperLib.add_internal_dn(self.atlas_control, self.user_line_config1['userName'])
+-#         assert(guiHelperLib.verify_data_using_cmi(
+-#                                                   self.um1,
+-#                                                   config.customer1,
+-#                                                   self.user_line_config1['userName'],
+-#                                                   config.cisAccess, feature = "SecondaryLine",
+-#                                                   identifier = "pattern", value = directory_number
+-#                                                   ))
+-#             
+           
+     @classmethod
+     def tearDownClass(cls):
+diff --git a/gui_lib/GuiHelperLib.py b/gui_lib/GuiHelperLib.py
+index 3edf946..2766cba 100644
+--- a/gui_lib/GuiHelperLib.py
++++ b/gui_lib/GuiHelperLib.py
+@@ -12,6 +12,7 @@ from pages.email.InboxPage import InboxPage
+ from pages.selfcare.PasswordPage import PasswordPage
+ from pages.selfcare.SelfcareHomePage import SelfcareHomePage
+ 
++
+ # import suiteconfig as config
+ # from pages.selfcare.SelfcareLoginPage import SelfcareLoginPage
+ log = logging.getLogger("GuiHelperLib")
+@@ -258,7 +259,7 @@ def set_password(password_ui_control, username, password):
+     log.info('=====================================')   
+     password_page.setPassword(username, password)   
+     
+-def update_callfwd_dn(webdriver_api, userId, cfType, destination_dn_1=None, destination_dn_2=None, dn='Primary'):
++def update_callfwd_dn(webdriver_api, userId, cfType, destination_dn_1, destination_dn_2=None, dn='Primary'):
+     """
+     This method will update the callforward DN based on the 
+     callForwardType(cfType).The accepted cfType values are 
+@@ -274,31 +275,33 @@ def update_callfwd_dn(webdriver_api, userId, cfType, destination_dn_1=None, dest
+                           read from the suiteConfig.
+     dn                --  The line on which the callForward configs need to be done, 
+                           by default its set to primary Line. 
+-    return:
+-    directory_number 
++     
+     """
+     userProvisionObj = select_user(webdriver_api, userId) 
+     lineObj = userProvisionObj.addLineProperties()
+     webdriver_api.wait_for_ajax_completion()
+-    """
+-    Returning directory number because of JSON Verification
+-    """
+-    directory_number = lineObj.return_directory_number()
+     try:
+         if cfType == 'cfa':
+             lineObj.cfa(destination_dn_1)
++        elif cfType == 'cfna':
++            lineObj.cfnaInt(destination_dn_1)
+         elif cfType == 'cfb':
+             lineObj.cfbInt(destination_dn_1)
++        elif cfType == 'cfnaExt':
++            lineObj.cfnaExt(destination_dn_1)
+         elif cfType == 'cfbExt':
+             lineObj.cfbExt(destination_dn_1)
+-        elif cfType == 'dfc':
+-            lineObj.dfc()
++        elif cfType == 'cfbExt_And_cfnaExt':
++            lineObj.cfnaExt(destination_dn_1)
++            lineObj.cfbExt(destination_dn_2)
++        elif cfType == 'cfbInt_And_cfnaInt':
++            lineObj.cfnaInt(destination_dn_1)
++            lineObj.cfbInt(destination_dn_2)
+         lineObj.save_page()
+-    except:
+-        raise 
++    except Exception as e:
++        raise e
+     finally:
+         lineObj.close_page()
+-        return directory_number
+ 
+ 
+ def add_snr(webdriver_api, email, snr):
+@@ -419,7 +422,7 @@ def dnd_selfcare(webdriver_api, status):
+     selfcarehomepage = SelfcareHomePage(webdriver_api)
+     selfcarehomepage.do_not_disturb(status)
+          
+-def verify_data_using_cmi(um1, customer, user, cisAccess, verifyData="None", feature='CALLFWD', identifier="None", value="None"):
++def verify_data_using_cmi(um1, customer, user, cisAccess, verifyData, feature='CALLFWD'):
+     """
+     This Function will validate the data entered using UMLib.
+     
+@@ -432,8 +435,7 @@ def verify_data_using_cmi(um1, customer, user, cisAccess, verifyData="None", fea
+                     attributes that needs to be validated.
+     feature     --  this attribute determines whether to validate the callForward or 
+                      the SNR attributes.
+-    identifier  -- this will hold the key for JSON Data identification
+-    value       -- Value to compare with JSON data
++    
+     return:
+     True or False based on the validation is a success or a failure.
+     """
+@@ -446,7 +448,7 @@ def verify_data_using_cmi(um1, customer, user, cisAccess, verifyData="None", fea
+     retVal = False
+     
+     if(feature == 'CALLFWD'):
+-        retVal = CmiHelperLib.select_and_validate_dn(um1, cis_auth_token, customer_id, user, verifyData, identifier, value)
++        retVal = CmiHelperLib.select_and_validate_dn(um1, cis_auth_token, customer_id, user, verifyData)
+     elif(feature == 'SNR'):
+         retVal = CmiHelperLib.select_and_validate_snr( 
+                      um1, 
+@@ -455,11 +457,9 @@ def verify_data_using_cmi(um1, customer, user, cisAccess, verifyData="None", fea
+                      user, 
+                      verifyData)
+     elif(feature == 'AltNumbers'):
+-        retVal = CmiHelperLib.select_and_validate_dn(um1, cis_auth_token, customer_id, user, verifyData, identifier, value, 'True')
++        retVal = CmiHelperLib.select_and_validate_dn(um1, cis_auth_token, customer_id, user, verifyData, 'True')
+     elif(feature == 'Userfields'):
+         retVal = CmiHelperLib.select_and_validate_user(um1, cis_auth_token, customer_id, user, verifyData)
+-    elif(feature == 'SecondaryLine'):
+-        retVal = CmiHelperLib.select_and_validate_secondary_line(um1, cis_auth_token, customer_id, user, identifier, value)
+     return retVal
+     
+ def add_external_dn(webdriver_api, userId):
+@@ -472,12 +472,10 @@ def add_external_dn(webdriver_api, userId):
+     """
+     userProvisionObj = select_user(webdriver_api, userId)
+     lineObj = userProvisionObj.addLineProperties()
+-    try:
+-        dn = lineObj.externalDn()
+-        lineObj.save_page()
+-        return dn
+-    finally:
+-        lineObj.close_page()
++    dn = lineObj.externalDn()
++    lineObj.save_page()
++    lineObj.close_page()
++    return dn 
+ 
+ def add_internal_dn(webdriver_api, userId):
+     """
+@@ -489,17 +487,11 @@ def add_internal_dn(webdriver_api, userId):
+     """
+     userProvisionObj = select_user(webdriver_api, userId)
+     lineObj = userProvisionObj.add_new_line()
+-    try:
+-        lineObj.internalDn()
+-        """
+-        Click on the Do not forward calls option to continue with the test
+-        """
+-        webdriver_api.click(*lineObj.dfc_button)
+-        lineObj.save_page()
+-        dn = lineObj.return_directory_number()
+-        return dn 
+-    finally:
+-        lineObj.close_page()
++    dn = lineObj.internalDn()
++    lineObj.save_page()
++    lineObj.verify_internal_dn(dn)
++    lineObj.close_page()
++    return dn 
+     
+ def change_extension_number(webdriver_api, userId):
+     """
+@@ -511,13 +503,10 @@ def change_extension_number(webdriver_api, userId):
+     """
+     userProvisionObj = select_user(webdriver_api, userId)
+     lineObj = userProvisionObj.addLineProperties()
+-    try:
+-        lineObj.internalDn()
+-        lineObj.save_page()
+-        dn = lineObj.return_directory_number()
+-        return dn
+-    finally:
+-        lineObj.close_page() 
++    dn = lineObj.internalDn()
++    lineObj.save_page()
++    lineObj.close_page()
++    return dn 
+     
+ def change_callerid_displayname(webdriver_api, userId, callerId):
+     """
+@@ -530,14 +519,9 @@ def change_callerid_displayname(webdriver_api, userId, callerId):
+     """
+     userProvisionObj = select_user(webdriver_api, userId)
+     lineObj = userProvisionObj.addLineProperties()
+-    webdriver_api.wait_for_ajax_completion()
+-    try:
+-        lineObj.change_callerid(callerId)
+-        lineObj.save_page()
+-        directory_number = lineObj.return_directory_number()
+-        return directory_number
+-    finally:
+-        lineObj.close_page()
++    lineObj.change_callerid(callerId)
++    lineObj.save_page()
++    lineObj.close_page()
+           
+ def verify_users_gmail(email_ui_control, manualUserList):
+     """
+@@ -625,23 +609,6 @@ def select_user(webdriver_api, email):
+     webdriver_api.wait_for_ajax_completion()
+     return userProvisioningPage
+ 
+-def return_line_number(webdriver_api, userId):
+-    """
+-    Returns the internal extension number for an user in Line page
+-    
+-    keyword args:
+-    webdriver_api  --  the atlas page webdriver controller.
+-    userId         -- user name to be identified
+-    return : 
+-    line number
+-    """
+-    userProvisionObj = select_user(webdriver_api, userId)
+-    lineObj = userProvisionObj.addLineProperties()
+-    webdriver_api.wait_for_ajax_completion()
+-    line_number = lineObj.return_directory_number()
+-    lineObj.close_page()
+-    return line_number
+-
+ def banner(msg):
+     """
+     prints noticeable banner text into the log file.
+diff --git a/gui_lib/core/gui_control_core.py b/gui_lib/core/gui_control_core.py
+index 1225305..60af968 100644
+--- a/gui_lib/core/gui_control_core.py
++++ b/gui_lib/core/gui_control_core.py
+@@ -394,7 +394,6 @@ class WebDriverCore(object):
+         """
+         dropdown = self._find_element(target, by)
+         return Select(dropdown).first_selected_option.text
+-        
+ 
+     @web_driver_error
+     def mouse_over(self, target, by, ie_click_to_hover=False):
+@@ -764,20 +763,7 @@ class WebDriverCore(object):
+         else:
+             raise InvalidSelectorException('Invalid target selector: %s' % by)
+     
+-    def _find_elements(self, target, by):
+-        """
+-        Internal method for finding elements
+-        Returns multiple instances of the target passed
+-        """
+-        log.debug('Searching for target \'%s\' using method \'%s\''
+-                  % (target, by))
+-        for attr in dir(Selector):
+-            if by == getattr(Selector, attr):
+-                return self.webdriverApi.find_elements(by=by, value=target)
+-        else:
+-            raise InvalidSelectorException('Invalid target selector: %s' % by)
+-    
+-                
++        
+     def _implicit_wait_off(self):
+         """
+         Internal method for turning implicit waits off
+diff --git a/gui_lib/pages/atlas/LinePage.py b/gui_lib/pages/atlas/LinePage.py
+index 96d1424..404bfab 100644
+--- a/gui_lib/pages/atlas/LinePage.py
++++ b/gui_lib/pages/atlas/LinePage.py
+@@ -5,25 +5,26 @@ from pages.PageObject import PageObject
+ from pages.PageObject import PageValidationException
+ from pages.atlas.CommonOperations import CommonOperations
+ 
+-from selenium.webdriver.support.ui import Select
++
+ log = logging.getLogger('LinePage')
+ log.setLevel(logging.DEBUG)
+ 
+ class LinePage(PageObject):
+     
+-    cfa_button = ("//span[contains(text(), 'Forward all calls')]", Selector.XPATH)
++    cfa_button = ("//label[@for='forwardAllCalls']/input[@id='forwardAllCalls']", Selector.XPATH)
+     save_button = ("//div[@class='header-row row']//button[@id='btn-save']", Selector.XPATH)
+-    clickBusyorAway_button = ("//span[contains(text(),'Forward calls when line is busy or away')]", Selector.XPATH)
++    clickBusyorAway_button = (
++        "//label[@for='forwardBusyNoAnswer']/input[@id='forwardBusyNoAnswer']", Selector.XPATH)
+     close_button = ("//form[@name='lineSettingsForm']//i[@class='icon icon-close']",
+         Selector.XPATH)
+     cfa_dropdown = ("//cs-combobox[@id='cfa']//button", Selector.XPATH)
+     addNewCFA_dropdown = ("//cs-combobox[@id='cfa']//a[text()='Add New']", Selector.XPATH)
+-    cfbInt_dropdown = ("//cs-combobox[@id='cfbna']//button", Selector.XPATH)
+-    addNewCFBInt_dropdown = ("//cs-combobox[@id='cfbna']//a[text()='Add New']", Selector.XPATH)
++    cfbInt_dropdown = ("//cs-combobox[@id='cfb']//button", Selector.XPATH)
++    addNewCFBInt_dropdown = ("//cs-combobox[@id='cfb']//a[text()='Add New']", Selector.XPATH)
+     cfnaInt_dropdown = ("//cs-combobox[@id='cfna']//button", Selector.XPATH)
+     addNewCFNAInt_dropdown = ("//cs-combobox[@id='cfna']//a[text()='Add New']", Selector.XPATH)
+-    cfbExt_dropdown = ("//cs-combobox[@id='cfbnaExternal']//button", Selector.XPATH)
+-    addNewCFBExt_dropdown = ("//cs-combobox[@id='cfbnaExternal']//a[text()='Add New']",
++    cfbExt_dropdown = ("//cs-combobox[@id='cfbExternal']//button", Selector.XPATH)
++    addNewCFBExt_dropdown = ("//cs-combobox[@id='cfbExternal']//a[text()='Add New']",
+         Selector.XPATH)
+     cfnaExt_dropdown = ("//cs-combobox[@id='cfnaExternal']//button", Selector.XPATH)
+     addNewCFNAExt_dropdown = ("//cs-combobox[@id='cfnaExternal']//a[text()='Add New']", 
+@@ -35,9 +36,9 @@ class LinePage(PageObject):
+     changeExtensionNumber_dropdown = ("//select[@id='internalNumber']", Selector.XPATH)
+     
+     cfa_textbox = ("//div[@class='combo-box']//input", Selector.XPATH)
+-    cfbInt_textbox = ("//cs-combobox[@id='cfbna']//input", Selector.XPATH)
++    cfbInt_textbox = ("//cs-combobox[@id='cfb']//input", Selector.XPATH)
+     cfnaInt_textbox = ("//cs-combobox[@id='cfna']//input", Selector.XPATH)
+-    cfbExt_textbox = ("//cs-combobox[@id='cfbnaExternal']//input", Selector.XPATH)
++    cfbExt_textbox = ("//cs-combobox[@id='cfbExternal']//input", Selector.XPATH)
+     cfnaExt_textbox = ("//cs-combobox[@id='cfnaExternal']//input", Selector.XPATH)
+     forwardExternalCalls = ("//label[@id='ckForwardExternalCalls']//label", Selector.XPATH)
+     forwardExternalCallsChecked = (
+@@ -47,7 +48,6 @@ class LinePage(PageObject):
+     
+     callerIdOther_radio = ("//input[@id='callerIdOther']", Selector.XPATH)
+     line_header = ("//h3[text()='Line Configuration']", Selector.XPATH)
+-    dfc_button = ("//span[contains(text() , 'Do not forward calls')]", Selector.XPATH)
+     
+     def cfa(self, cfa=''):
+         """
+@@ -135,13 +135,6 @@ class LinePage(PageObject):
+             self.api.type_text(cfnaExt, *self.cfnaExt_textbox)
+         else:
+             log.info("CFNA-Ext not present, hence not configuring CFNA-Ext")
+-    
+-    def dfc(self):
+-        '''
+-        Function to add the dfc
+-
+-        '''
+-        self.api.click(*self.dfc_button)
+ 
+     def externalDn(self):
+         """
+@@ -167,6 +160,9 @@ class LinePage(PageObject):
+         try:
+             #self.api.wait_for_element_boolean(*self.addInternalDn_dropdownText, timeout=10)
+             self.api.set_dropdown_value_by_index(*self.addInternalDn_dropdown, index=1)
++            dn = self.api.return_dropdown_value(*self.addInternalDn_dropdown)
++            log.info("The selected Internal DN from the dropdown is: %s" % dn)
++            return dn
+         except:
+             log.info("Internal DN not configured")
+             raise Exception("Internal DN not configured")      
+@@ -192,7 +188,6 @@ class LinePage(PageObject):
+         """
+         
+         if(callerId != ''):
+-            self.api.wait_for_element_boolean(timeout=5, *self.callerIdOther_radio)
+             self.api.click(*self.callerIdOther_radio)
+             self.api.wait_for_element_boolean(timeout=5, *self.callerIdOther_textbox)
+             if(not self.api._find_element(*self.callerIdOther_textbox).is_displayed()):
+@@ -223,26 +218,6 @@ class LinePage(PageObject):
+         """
+         self.api.click(*self.close_button)
+     
+-    def return_directory_number(self):
+-        """
+-        Returns the directory number for a User, here is it the identifier for JSON verification
+-        """
+-         
+-        value = self.return_selected_value(*self.addInternalDn_dropdown)
+-        log.info("Value returned is :" + value)
+-        return value
+-        
+-       
+-    
+-        
+-    def return_selected_value(self, target, by):
+-        """
+-        Returns a dropdown value for a target
+-        """  
+-        target += "/option"
+-        optionList = self.api._find_elements(target, by)
+-        return optionList[-1].text
+-    
+     def _validate_page(self):
+         """
+         Validates the page
+diff --git a/gui_lib/pages/atlas/UsersPage.py b/gui_lib/pages/atlas/UsersPage.py
+index 65cac12..398cd88 100644
+--- a/gui_lib/pages/atlas/UsersPage.py
++++ b/gui_lib/pages/atlas/UsersPage.py
+@@ -31,7 +31,6 @@ class UsersPage(PageObject):
+     all_users_link = ("//li[@class='filter ng-scope active']/a", Selector.XPATH)
+     usertable_rows = ("//div[@class='ngViewport ng-scope']/div/div", Selector.XPATH)
+     webExSquared_checkbox = ("//label[@id='chk_webExSquared']//label", Selector.XPATH)
+-    enableCollabServ_radio = ("//span[@id='collabRadioLabel1']", Selector.XPATH)
+            
+     def inviteUser(self, user_dicts, entitlements):
+         """
+@@ -58,7 +57,7 @@ class UsersPage(PageObject):
+         """Below if code can be removed"""
+         if(user == ""):
+             self.api.type_text(email, *self.email_textbox) 
+-        self.api.click(*self.enableCollabServ_radio)
++        self.api.click(*self.enableService_radio)
+         
+         """Fetches the class attribute value of 'Squared' checkbox's label""" 
+         status = self.api.get_attribute_value(*self.webExSquared_checkbox, attribute="class")
+diff --git a/gui_lib/suiteconfig.py b/gui_lib/suiteconfig.py
+index 2f99293..4618102 100644
+--- a/gui_lib/suiteconfig.py
++++ b/gui_lib/suiteconfig.py
+@@ -104,15 +104,21 @@ user_1_line_config = {
+ }
+ 
+ user_1_verify = {
+-    'cfb': {
++    'cfbCfna': {
+         'callForwardBusy': {
+             'intDestination': user_1_line_config['call_forward_busy']
++        },
++        'callForwardNoAnswer': {
++            'intDestination': user_1_line_config['call_forward_no_answer']
+         }
+     },
+ 
+-    'cfbExt': {
++    'cfbCfnaExt': {
+         'callForwardBusy': {
+             "destination": user_1_line_config['call_forward_busy_ext']
++        },
++        "callForwardNoAnswer": {
++            "destination": user_1_line_config['call_forward_no_answer_ext']
+         }
+     },
+ 
+@@ -127,13 +133,9 @@ user_1_verify = {
+     'userfields': {
+         'firstName': user_1['firstName'],
+         'lastName': user_1['lastName']
+-    },
+-    
+-    'cfa': {
+-        'callForwardAll': {
+-            "destination": user_1_line_config['call_forward_all']
+-        }         
+     }
++                 
++
+ }
+ 
+ 
